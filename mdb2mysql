@@ -1,0 +1,13 @@
+#!/bin/bash
+
+mdb="`echo $1|sed -e "s/\.mdb$//"`"
+
+echo "drop database if exists $mdb;">$mdb.sql
+echo "create database $mdb;">>$mdb.sql
+echo "use $mdb;">>$mdb.sql
+mdb-schema $mdb.mdb mysql>>$mdb.sql
+for table in `mdb-tables $mdb.mdb`;do
+  mdb-export -I mysql $mdb.mdb $table >> $mdb.sql
+done
+
+
